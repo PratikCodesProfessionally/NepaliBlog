@@ -120,8 +120,17 @@ code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberat
   padding: .5rem .75rem; border-radius: 999px;
   border: 1px solid var(--border);
   background: transparent; color: inherit;
+  transition: all 0.3s ease;
 }
-.site-nav a:hover, .site-nav .btn:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); }
+.site-nav a:hover, .site-nav .btn:hover { 
+  background: color-mix(in srgb, var(--ink) 6%, transparent); 
+  transform: translateY(-2px);
+}
+.site-nav a.active {
+  background: color-mix(in srgb, var(--brand) 20%, transparent);
+  border-color: var(--brand);
+  font-weight: 600;
+}
 
 /* Buttons */
 .btn {
@@ -232,13 +241,16 @@ code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberat
   .content-grid { grid-template-columns: 1fr; }
   .sidebar { position: static; }
   .site-footer .inner { flex-direction: column; align-items: flex-start; }
+  .site-header .container { flex-direction: column; }
+  .site-nav { width: 100%; justify-content: center; flex-wrap: wrap; }
 }
 
 /* Tweak for very small screens */
 @media (max-width: 480px) {
   .container { padding: 16px; }
+  .brand { flex-direction: column; text-align: center; }
   .brand img { width: 36px; }
-  .site-nav a, .site-nav .btn { padding: .45rem .6rem; }
+  .site-nav a, .site-nav .btn { padding: .45rem .6rem; font-size: 0.85rem; }
 }
 
 /* ===========================
