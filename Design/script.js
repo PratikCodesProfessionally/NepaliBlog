@@ -31,35 +31,50 @@ const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
 /* ========= Share buttons + Copy link ========= */
 (function shareManager() {
-  const url = location.href;
+  const baseUrl = location.origin + location.pathname;
   const title = document.title;
-  const copyBtn = document.querySelector('[data-copy]');
-  const tw = document.querySelector('[data-share-twitter]');
-  const fb = document.querySelector('[data-share-fb]');
+  
+  // Find all sharebar containers
+  const sharebars = $$('.sharebar');
+  
+  sharebars.forEach((sharebar) => {
+    // Find the article this sharebar belongs to
+    const article = sharebar.closest('article');
+    const articleId = article?.id;
+    
+    // Determine the URL for this specific article
+    const url = articleId ? `${baseUrl}#${articleId}` : location.href;
+    
+    // Get buttons within this specific sharebar
+    const copyBtn = sharebar.querySelector('[data-copy]');
+    const tw = sharebar.querySelector('[data-share-twitter]');
+    const fb = sharebar.querySelector('[data-share-fb]');
 
-  // Fill share URLs
-  if (tw) tw.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
-  if (fb) fb.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+    // Fill share URLs
+    if (tw) tw.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+    if (fb) fb.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
 
-  // Native share if available (clicking any share link on small screens)
-  const tryNativeShare = async (e) => {
-    if (navigator.share) {
-      e.preventDefault();
-      try { await navigator.share({ title, url }); } catch (_) {}
-    }
-  };
-  tw?.addEventListener('click', tryNativeShare);
-  fb?.addEventListener('click', tryNativeShare);
+    // Native share if available (clicking any share link on small screens)
+    const tryNativeShare = async (e) => {
+      if (navigator.share) {
+        e.preventDefault();
+        try { await navigator.share({ title, url }); } catch (_) {}
+      }
+    };
+    tw?.addEventListener('click', tryNativeShare);
+    fb?.addEventListener('click', tryNativeShare);
 
-  // Copy link fallback
-  copyBtn?.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(url);
-      copyBtn.textContent = 'कपी भयो!';
-      setTimeout(() => (copyBtn.textContent = 'लिंक कपी'), 1400);
-    } catch {
-      prompt('Copy this link:', url);
-    }
+    // Copy link fallback
+    copyBtn?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(url);
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'कपी भयो!';
+        setTimeout(() => (copyBtn.textContent = originalText), 1400);
+      } catch {
+        prompt('Copy this link:', url);
+      }
+    });
   });
 })();
 
